@@ -113,6 +113,7 @@
     "unchecked": "Unchecked"
   },
   "common": {
+    "categories": "Danh Mục",
     "address": "Address",
     "advancedForms": "Advanced Forms",
     "age": "Age",
@@ -141,7 +142,7 @@
     "copied": "Copied to clipboard",
     "copy": "Copy",
     "country": "Country",
-    "nft-dashboard": "NFT Dashboard",
+    "nft-dashboard": "Home Dashboard",
     "medical-dashboard": "Medical Dashboard",
     "dataDisplay": "Data display",
     "dataTables": "Data Tables",

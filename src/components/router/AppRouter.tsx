@@ -17,6 +17,9 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage';
 
+//  Main sidebar
+const CategoriesPage = React.lazy(() => import('@app/pages/CategoriesPage'));
+
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
 const ChartsPage = React.lazy(() => import('@app/pages/ChartsPage'));
@@ -54,10 +57,6 @@ const DropdownsPage = React.lazy(() => import('@app/pages/uiComponentsPages/Drop
 const BreadcrumbsPage = React.lazy(() => import('@app/pages/uiComponentsPages/navigation/BreadcrumbsPage'));
 const TabsPage = React.lazy(() => import('@app/pages/uiComponentsPages/navigation/TabsPage'));
 const NotificationsUIPage = React.lazy(() => import('@app/pages/uiComponentsPages/feedback/NotificationsPage'));
-const GoogleMaps = React.lazy(() => import('@app/pages/maps/GoogleMapsPage/GoogleMapsPage'));
-const LeafletMaps = React.lazy(() => import('@app/pages/maps/LeafletMapsPage/LeafletMapsPage'));
-const ReactSimpleMaps = React.lazy(() => import('@app/pages/maps/ReactSimpleMapsPage/ReactSimpleMapsPage'));
-const PigeonsMaps = React.lazy(() => import('@app/pages/maps/PigeonsMapsPage/PigeonsMapsPage'));
 const Logout = React.lazy(() => import('./Logout'));
 
 export const NFT_DASHBOARD_PATH = '/';
@@ -100,12 +99,6 @@ const Skeletons = withLoading(SkeletonsPage);
 const DataTables = withLoading(DataTablesPage);
 const Charts = withLoading(ChartsPage);
 
-// Maps
-const Google = withLoading(GoogleMaps);
-const Leaflet = withLoading(LeafletMaps);
-const ReactSimple = withLoading(ReactSimpleMaps);
-const Pigeons = withLoading(PigeonsMaps);
-
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
 
@@ -117,6 +110,9 @@ const Payments = withLoading(PaymentsPage);
 
 const AuthLayoutFallback = withLoading(AuthLayout);
 const LogoutFallback = withLoading(Logout);
+
+// Main poly decor router
+const Categories = withLoading(CategoriesPage);
 
 export const AppRouter: React.FC = () => {
   const protectedLayout = (
@@ -138,13 +134,9 @@ export const AppRouter: React.FC = () => {
             <Route path="advanced-forms" element={<AdvancedForm />} />
           </Route>
           <Route path="data-tables" element={<DataTables />} />
+          <Route path="categories" element={<Categories />} />
           <Route path="charts" element={<Charts />} />
-          <Route path="maps">
-            <Route path="google-maps" element={<Google />} />
-            <Route path="leaflet-maps" element={<Leaflet />} />
-            <Route path="react-simple-maps" element={<ReactSimple />} />
-            <Route path="pigeon-maps" element={<Pigeons />} />
-          </Route>
+
           <Route path="server-error" element={<ServerError />} />
           <Route path="404" element={<Error404 />} />
           <Route path="profile" element={<ProfileLayout />}>

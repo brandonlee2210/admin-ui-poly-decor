@@ -102,6 +102,12 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     icon: <TableOutlined />,
   },
   {
+    title: 'common.categories',
+    key: 'categories',
+    url: '/categories',
+    icon: <TableOutlined />,
+  },
+  {
     title: 'common.charts',
     key: 'charts',
     url: '/charts',

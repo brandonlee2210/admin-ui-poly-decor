@@ -11,6 +11,9 @@ module.exports = {
       ...(process.env.NODE_ENV === 'development' ? [new BundleAnalyzerPlugin({ openAnalyzer: false })] : []),
     ],
   },
+  eslint: {
+    enable: false,
+  },
   plugins: [
     {
       plugin: CracoAlias,

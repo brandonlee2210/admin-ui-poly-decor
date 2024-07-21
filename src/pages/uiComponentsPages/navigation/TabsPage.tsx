@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppleOutlined, AndroidOutlined } from '@ant-design/icons';
 import { BaseRadio } from '@app/components/common/BaseRadio/BaseRadio';
