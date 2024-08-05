@@ -113,7 +113,9 @@
     "unchecked": "Unchecked"
   },
   "common": {
-    "categories": "Danh Mục",
+    "orders": "Orders",
+    "categories": "Categories",
+    "products": "Products",
     "address": "Address",
     "advancedForms": "Advanced Forms",
     "age": "Age",

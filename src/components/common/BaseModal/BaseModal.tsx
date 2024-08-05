@@ -17,7 +17,7 @@ export const BaseModal: BaseModalInterface = ({ size = 'medium', children, ...pr
   const modalSize = Object.entries(modalSizes).find((sz) => sz[0] === size)?.[1];
 
   return (
-    <Modal getContainer={false} width={modalSize} {...props}>
+    <Modal getContainer={false} width={modalSize} {...props} footer={null}>
       {children}
     </Modal>
   );

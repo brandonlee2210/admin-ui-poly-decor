@@ -18,7 +18,9 @@ import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage';
 
 //  Main sidebar
-const CategoriesPage = React.lazy(() => import('@app/pages/CategoriesPage'));
+const ProductsPage = React.lazy(() => import('@app/pages/ProductsPage/ProductsPage'));
+const CategoriesPage = React.lazy(() => import('@app/pages/CategoriesPage/CategoriesPage'));
+const OrdersPage = React.lazy(() => import('@app/pages/OrdersPage/OrdersPage'));
 
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
@@ -113,6 +115,8 @@ const LogoutFallback = withLoading(Logout);
 
 // Main poly decor router
 const Categories = withLoading(CategoriesPage);
+const Products = withLoading(ProductsPage);
+const Orders = withLoading(OrdersPage);
 
 export const AppRouter: React.FC = () => {
   const protectedLayout = (
@@ -125,15 +129,15 @@ export const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path={NFT_DASHBOARD_PATH} element={protectedLayout}>
-          <Route index element={<NftDashboard />} />
+          <Route index element={<Products />} />
           <Route path={MEDICAL_DASHBOARD_PATH} element={<MedicalDashboard />} />
           <Route path="apps">
             <Route path="feed" element={<NewsFeed />} />
           </Route>
-          <Route path="forms">
-            <Route path="advanced-forms" element={<AdvancedForm />} />
-          </Route>
+
           <Route path="data-tables" element={<DataTables />} />
+          <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} />
           <Route path="categories" element={<Categories />} />
           <Route path="charts" element={<Charts />} />
 
@@ -144,35 +148,6 @@ export const AppRouter: React.FC = () => {
             <Route path="security-settings" element={<SecuritySettings />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="payments" element={<Payments />} />
-          </Route>
-          <Route path="ui-components">
-            <Route path="button" element={<Buttons />} />
-            <Route path="spinner" element={<Spinners />} />
-            <Route path="input" element={<Inputs />} />
-            <Route path="checkbox" element={<Checkboxes />} />
-            <Route path="radio" element={<Radios />} />
-            <Route path="select" element={<Selects />} />
-            <Route path="switch" element={<Switches />} />
-            <Route path="upload" element={<Uploads />} />
-            <Route path="rate" element={<Rates />} />
-            <Route path="auto-complete" element={<AutoCompletes />} />
-            <Route path="steps" element={<Steps />} />
-            <Route path="date-time-picker" element={<DateTimePickers />} />
-            <Route path="dropdown" element={<Dropdowns />} />
-            <Route path="breadcrumbs" element={<Breadcrumbs />} />
-            <Route path="tabs" element={<Tabs />} />
-            <Route path="avatar" element={<Avatars />} />
-            <Route path="badge" element={<Badges />} />
-            <Route path="collapse" element={<Collapse />} />
-            <Route path="pagination" element={<Pagination />} />
-            <Route path="modal" element={<Modals />} />
-            <Route path="popover" element={<Popovers />} />
-            <Route path="popconfirm" element={<Popconfirms />} />
-            <Route path="progress" element={<Progress />} />
-            <Route path="result" element={<Results />} />
-            <Route path="alert" element={<Alerts />} />
-            <Route path="notification" element={<NotificationsUI />} />
-            <Route path="skeleton" element={<Skeletons />} />
           </Route>
         </Route>
         <Route path="/auth" element={<AuthLayoutFallback />}>

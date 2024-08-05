@@ -196,12 +196,6 @@ export const PersonalInfo: React.FC = () => {
             <ZipcodeItem />
           </BaseCol>
 
-          <BaseCol span={24}>
-            <BaseButtonsForm.Item>
-              <BaseButtonsForm.Title>{t('profile.nav.personalInfo.otherInfo')}</BaseButtonsForm.Title>
-            </BaseButtonsForm.Item>
-          </BaseCol>
-
           <BaseCol xs={24} md={12}>
             <WebsiteItem />
           </BaseCol>

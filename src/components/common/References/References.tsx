@@ -5,16 +5,7 @@ import { FacebookOutlined, GithubOutlined, LinkedinOutlined, TwitterOutlined } f
 export const References: React.FC = () => {
   return (
     <S.ReferencesWrapper>
-      <S.Text>
-        Made by{' '}
-        <a href="https://altence.com" target="_blank" rel="noreferrer">
-          Altence{' '}
-        </a>
-        in 2022 &copy;. Based on{' '}
-        <a href="https://ant.design/" target="_blank" rel="noreferrer">
-          Ant-design.
-        </a>
-      </S.Text>
+      <S.Text>Made by FPT Polytechnic students</S.Text>
       <S.Icons>
         <a href="https://github.com/altence/lightence-admin" target="_blank" rel="noreferrer">
           <GithubOutlined />

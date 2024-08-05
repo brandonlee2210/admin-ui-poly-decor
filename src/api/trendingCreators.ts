@@ -45,7 +45,7 @@ export const getTrendingCreators = (): Promise<TrendingCreator[]> => {
         {
           url: process.env.REACT_APP_ASSETS_BUCKET + '/lightence-trending/roma-kaiuk-u1vda3HaAJE-unsplash_qkeobi.webp',
           header: {
-            heading: 'Christianna Buehner',
+            heading: 'Baotianna Buehner',
             subheading: 'Metro',
             profileImage: process.env.REACT_APP_ASSETS_BUCKET + '/lightence-trending/Rectangle_463_1_d1omr2.webp',
           },

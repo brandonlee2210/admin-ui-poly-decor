@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { BasicTableRow, Pagination } from 'api/table.api';
 import { EditableCell } from './EditableCell';
@@ -14,7 +14,7 @@ const initialPagination = {
   pageSize: 5,
 };
 
-export const EditableTable = ({ getDataTable, columns, form }) => {
+export const EditableTable = forwardRef(({ getDataTable, columns, form, cancel }, ref) => {
   const [tableData, setTableData] = useState({
     data: [],
     pagination: initialPagination,
@@ -28,11 +28,16 @@ export const EditableTable = ({ getDataTable, columns, form }) => {
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
 
-      getDataTable(pagination).then((res) => {
-        if (isMounted.current) {
-          setTableData({ data: res.data, pagination: res.pagination, loading: false });
-        }
-      });
+      getDataTable(pagination)
+        .then((res) => {
+          console.log(res);
+          if (isMounted.current) {
+            setTableData({ data: res.data, pagination: res.pagination, loading: false });
+          }
+        })
+        .catch((error) => {
+          setTableData((tableData) => ({ ...tableData, loading: false }));
+        });
     },
     [isMounted, getDataTable],
   );
@@ -46,9 +51,14 @@ export const EditableTable = ({ getDataTable, columns, form }) => {
     cancel();
   };
 
-  const handleDeleteRow = (rowId) => {
-    setTableData({ ...tableData, data: tableData.data.filter((item) => item.key !== rowId) });
+  const syncData = (pagination) => {
+    fetch(pagination);
   };
+
+  // Expose the childMethod function to the parent component through the ref
+  useImperativeHandle(ref, () => ({
+    syncData,
+  }));
 
   return (
     <BaseForm form={form} component={false}>
@@ -62,14 +72,14 @@ export const EditableTable = ({ getDataTable, columns, form }) => {
         dataSource={tableData.data}
         columns={columns}
         rowClassName="editable-row"
-        // pagination={{
-        //   ...tableData.pagination,
-        //   onChange: cancel,
-        // }}
+        pagination={{
+          ...tableData.pagination,
+          onChange: cancel,
+        }}
         onChange={handleTableChange}
         loading={tableData.loading}
         scroll={{ x: 800 }}
       />
     </BaseForm>
   );
-};
+});
