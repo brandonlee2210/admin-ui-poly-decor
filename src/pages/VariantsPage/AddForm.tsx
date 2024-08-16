@@ -18,16 +18,12 @@ import { getCategories, update, deleteCategory } from '@app/api/categories.api';
 import { addNewProduct } from '@app/api/products.api';
 import { PlusOutlined } from '@ant-design/icons';
 import * as S from './DynamicForm.styles';
-import { Upload } from 'antd';
 import { useState, useEffect } from 'react';
-import { BaseSpin } from '@app/components/common/BaseSpin/BaseSpin';
-import { Spin } from 'antd';
+
 const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
-
-const url = 'https://api.cloudinary.com/v1_1/deunymbky/image/upload';
 
 const normFile = (e = { fileList: [] }) => {
   if (Array.isArray(e)) {
@@ -42,10 +38,6 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
   const [categories, setCategories] = useState([]);
   const { t } = useTranslation();
   const [form] = BaseButtonsForm.useForm();
-  const [uploading, setUploading] = useState(false);
-  const [imageLink, setImageLink] = useState('');
-
-  const [fileList, setFileList] = useState([]);
 
   const variantsEnum = [
     { label: 'Màu sắc', value: 'color' },
@@ -90,47 +82,14 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
     }
   };
 
-  const onUploadImage = async (data) => {
-    console.log('file', data);
-    setUploading(true);
-    // TODO: Upload image to cloudinary and get secure_url
-    const formData = new FormData();
-    formData.append('file', data.file);
-    formData.append('cloud_name', 'deunymbky');
-    formData.append('upload_preset', 'qtwq9io5');
-
-    setFileList([data.file]);
-    const options = {
-      method: 'POST',
-      body: formData,
-    };
-
-    try {
-      let res = await fetch(url, options);
-      let data = await res.json();
-
-      console.log(data);
-
-      if (data.secure_url) {
-        setImageLink(data.secure_url);
-        setUploading(false);
-        return data.secure_url;
-        data.onSuccess();
-      }
-
-      notificationController.error({ message: t('common.error'), description: 'Upload image failed' });
-      setUploading(false);
-    } catch (err) {
-      console.log(err);
-      setUploading(false);
-      notificationController.error({ message: t('common.error'), description: 'Upload image failed' });
-    }
-  };
-
   const onFinish = async (values = {}) => {
+    setLoading(true);
+
+    console.log(values);
+
     let dataAdd = {
       ...values,
-      image: imageLink,
+      image: values?.image ? values.image[0]?.name : 'default.jpg',
     };
 
     // upload image to folder asset client
@@ -218,27 +177,11 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload
-          name="picture"
-          beforeUpload={(file) => {
-            return onUploadImage({ file }).then((secureUrl) => {
-              form.setFieldsValue({
-                [field.name]: [...(field.value || []), { name: file.name, url: secureUrl }],
-              });
-              return false;
-            });
-          }}
-        >
+        <BaseUpload name="logo" action="/upload.do" listType="picture">
           <BaseButton type="default" icon={<UploadOutlined />}>
             {t('forms.validationFormLabels.clickToUpload')}
           </BaseButton>
-        </Upload>
-
-        {uploading && (
-          <div style={{ marginTop: '12px' }}>
-            <Spin size="large" />
-          </div>
-        )}
+        </BaseUpload>
       </BaseButtonsForm.Item>
 
       <BaseButtonsForm.Item label={'Variants'}>

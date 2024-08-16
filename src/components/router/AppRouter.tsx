@@ -21,6 +21,8 @@ import MedicalDashboardPage from '@app/pages/DashboardPages/MedicalDashboardPage
 const ProductsPage = React.lazy(() => import('@app/pages/ProductsPage/ProductsPage'));
 const CategoriesPage = React.lazy(() => import('@app/pages/CategoriesPage/CategoriesPage'));
 const OrdersPage = React.lazy(() => import('@app/pages/OrdersPage/OrdersPage'));
+const VariantsPage = React.lazy(() => import('@app/pages/VariantsPage/VariantsPage'));
+const UsersPage = React.lazy(() => import('@app/pages/UsersPage/UsersPage'));
 
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
@@ -117,6 +119,9 @@ const LogoutFallback = withLoading(Logout);
 const Categories = withLoading(CategoriesPage);
 const Products = withLoading(ProductsPage);
 const Orders = withLoading(OrdersPage);
+const Variants = withLoading(VariantsPage);
+
+const Users = withLoading(UsersPage);
 
 export const AppRouter: React.FC = () => {
   const protectedLayout = (
@@ -139,8 +144,9 @@ export const AppRouter: React.FC = () => {
           <Route path="products" element={<Products />} />
           <Route path="orders" element={<Orders />} />
           <Route path="categories" element={<Categories />} />
+          <Route path="variants" element={<Variants />} />
           <Route path="charts" element={<Charts />} />
-
+          <Route path="users" element={<Users />} />
           <Route path="server-error" element={<ServerError />} />
           <Route path="404" element={<Error404 />} />
           <Route path="profile" element={<ProfileLayout />}>

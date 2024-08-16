@@ -18,14 +18,13 @@ import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 import { BasePopconfirm } from '@app/components/common/BasePopconfirm/BasePopconfirm';
 import { ValidationForm } from './AddForm.tsx';
 import { EditForm } from './EditForm.tsx';
-import { SearchInput } from '@app/components/common/inputs/SearchInput/SearchInput';
 
 const initialPagination: Pagination = {
   current: 1,
   pageSize: 4,
 };
 
-export const ProductsTable: React.FC = () => {
+export const VariantsTable: React.FC = () => {
   const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
     data: [],
     pagination: initialPagination,
@@ -113,15 +112,6 @@ export const ProductsTable: React.FC = () => {
     // });
   };
 
-  // Hàm xử lí filter theo tên sản phẩm
-  const handleFilterByName = (value, record) => {
-    console.log(value, record);
-    // setTableData({
-    //   ...tableData,
-    //   data: tableData.data.filter((item) => item.name.includes(value)),
-    // });
-  };
-
   const columns: ColumnsType<BasicTableRow> = [
     {
       title: 'Product Name',
@@ -171,7 +161,7 @@ export const ProductsTable: React.FC = () => {
           ],
         },
       ],
-      onFilter: (value: string | number | boolean, record: BasicTableRow) => handleFilterByName(value, record),
+      onFilter: (value: string | number | boolean, record: BasicTableRow) => record.name.includes(value.toString()),
     },
     {
       title: 'Category Name',
@@ -207,7 +197,6 @@ export const ProductsTable: React.FC = () => {
     {
       title: 'Image',
       dataIndex: 'image',
-      render: (text: string) => <img src={text} alt="product" style={{ width: '100px', height: '100px' }} />,
     },
 
     // {
@@ -253,7 +242,6 @@ export const ProductsTable: React.FC = () => {
 
   return (
     <>
-      <SearchInput placeholder="Search product" style={{ width: 500, marginBottom: 10 }} loading={false} />
       <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
         Add new product
       </BaseButton>

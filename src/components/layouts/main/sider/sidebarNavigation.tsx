@@ -63,26 +63,37 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
         url: '/auth/sign-up',
       },
       {
-        title: 'common.lock',
-        key: 'lock',
-        url: '/auth/lock',
+        title: 'Users List',
+        key: 'usersList',
+        url: '/auth/users',
       },
-      {
-        title: 'common.forgotPass',
-        key: 'forgotPass',
-        url: '/auth/forgot-password',
-      },
-      {
-        title: 'common.securityCode',
-        key: 'securityCode',
-        url: '/auth/security-code',
-      },
-      {
-        title: 'common.newPassword',
-        key: 'newPass',
-        url: '/auth/new-password',
-      },
+      // {
+      //   title: 'common.lock',
+      //   key: 'lock',
+      //   url: '/auth/lock',
+      // },
+      // {
+      //   title: 'common.forgotPass',
+      //   key: 'forgotPass',
+      //   url: '/auth/forgot-password',
+      // },
+      // {
+      //   title: 'common.securityCode',
+      //   key: 'securityCode',
+      //   url: '/auth/security-code',
+      // },
+      // {
+      //   title: 'common.newPassword',
+      //   key: 'newPass',
+      //   url: '/auth/new-password',
+      // },
     ],
+  },
+  {
+    title: 'common.variants',
+    key: 'variants',
+    url: '/variants',
+    icon: <TableOutlined />,
   },
   {
     title: 'common.products',
