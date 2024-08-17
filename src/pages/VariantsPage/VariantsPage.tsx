@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { EditableCell } from '../../components/tables/editableTable/EditableCell';
 import { EditableTable } from '../../components/tables/editableTable/EditableTable';
-import { getCategories, update, deleteCategory } from '@app/api/categories.api';
+import { getCategories, update, deleteCategory, getVariantsProductt } from '@app/api/categories.api';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { useMounted } from '@app/hooks/useMounted';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
-// import * as S from '../components/tables/Tables.styles';
 import { BasePopconfirm } from '@app/components/common/BasePopconfirm/BasePopconfirm';
 import { ValidationForm } from './AddForm.tsx';
 import { notificationController } from '@app/controllers/notificationController';
@@ -40,9 +39,8 @@ const CategoriesPage = () => {
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
 
-      getCategories(pagination)
+      getVariantsProductt(pagination)
         .then((res) => {
-          console.log(res);
           if (isMounted.current) {
             setTableData({ data: res.data, pagination: res.pagination, loading: false });
           }
@@ -62,17 +60,6 @@ const CategoriesPage = () => {
     fetch(pagination);
     cancel();
   };
-
-  // Gọi method từ th con
-  // const childRef = useRef(null);
-
-  // const callChildFunction = () => {
-  //   console.log(childRef);
-  //   if (childRef.current) {
-  //     console.log('childRef.current', childRef.current);
-  //     childRef.current.syncData();
-  //   }
-  // };
 
   const isEditing = (record) => {
     return record._id === editingKey;
@@ -123,7 +110,6 @@ const CategoriesPage = () => {
   const handleDeleteRow = async (rowId) => {
     try {
       let res = await deleteCategory(rowId);
-      console.log(res);
       if (res) {
         fetch(tableData.pagination);
         notificationController.success({ message: t('common.success'), description: 'Delete category successfully' });
@@ -135,19 +121,18 @@ const CategoriesPage = () => {
       notificationController.error({ message: t('common.error'), description: 'Delete category failed' });
       console.log('Error:', errInfo);
     }
-    // setTableData({ ...tableData, data: tableData.data.filter((item) => item.key !== rowId) });
   };
 
   const columns = [
     {
-      title: 'Category Name',
-      dataIndex: 'name',
+      title: 'Variant Name',
+      dataIndex: 'variantProductName',
       width: '45%',
       editable: true,
     },
     {
-      title: 'Category ID',
-      dataIndex: 'categoryID',
+      title: 'Variant type',
+      dataIndex: 'variantProductType',
       width: '40%',
       editable: false,
     },
@@ -200,25 +185,31 @@ const CategoriesPage = () => {
     };
   });
 
-  // remounted EditableTable
-
   return (
     <>
       <PageTitle>{t('common.dataTables')}</PageTitle>
       <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
-        Add new category
+        Add new variant
       </BaseButton>
       <BaseModal
-        title={'Add new category'}
+        title={'Add new variant'}
         open={isBasicModalOpen}
-        onOk={() => setIsBasicModalOpen(false)}
-        onCancel={() => setIsBasicModalOpen(false)}
+        onOk={() => {
+          setIsBasicModalOpen(false);
+          form.resetFields();
+        }}
+        onCancel={() => {
+          console.log('hi');
+          setIsBasicModalOpen(false);
+          form.resetFields();
+        }}
         width={'70%'}
         footer={null}
       >
         <ValidationForm
           onSaveSuccess={() => {
             setIsBasicModalOpen(false);
+            form.resetFields();
             fetch(tableData.pagination);
           }}
         />

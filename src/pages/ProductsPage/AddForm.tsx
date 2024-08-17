@@ -14,12 +14,13 @@ import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseCheckbox } from '@app/components/common/BaseCheckbox/BaseCheckbox';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
-import { getCategories, update, deleteCategory } from '@app/api/categories.api';
+import { getCategories, update, deleteCategory, getAllVariantsProduct } from '@app/api/categories.api';
 import { addNewProduct } from '@app/api/products.api';
 import { PlusOutlined } from '@ant-design/icons';
 import * as S from './DynamicForm.styles';
 import { Upload } from 'antd';
 import { useState, useEffect } from 'react';
+import { Form } from 'antd';
 import { BaseSpin } from '@app/components/common/BaseSpin/BaseSpin';
 import { Spin } from 'antd';
 const formItemLayout = {
@@ -41,33 +42,38 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
   const [isLoading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const { t } = useTranslation();
-  const [form] = BaseButtonsForm.useForm();
   const [uploading, setUploading] = useState(false);
   const [imageLink, setImageLink] = useState('');
+  const [variants, setVariants] = useState([]);
+  const [colorsEnum, setColorsEnum] = useState([]);
+  const [materialsEnum, setMaterialsEnum] = useState([]);
+  const [form] = Form.useForm();
 
   const [fileList, setFileList] = useState([]);
 
-  const variantsEnum = [
-    { label: 'Màu sắc', value: 'color' },
-    { label: 'Chất liệu', value: 'material' },
-  ];
+  // const variantsEnum = [
+  //   { label: 'Màu sắc', value: 'color' },
+  //   { label: 'Chất liệu', value: 'material' },
+  // ];
 
-  var colorsEnum = [
-    { label: 'Nâu', value: 'Nâu' },
-    { label: 'Trắng', value: 'Trắng' },
-    { label: 'Vàng', value: 'Vàng' },
-  ];
+  // var colorsEnum = [
+  //   { label: 'Nâu', value: 'Nâu' },
+  //   { label: 'Trắng', value: 'Trắng' },
+  //   { label: 'Vàng', value: 'Vàng' },
+  // ];
 
-  var materialsEnum = [
-    {
-      label: 'Gỗ sồi',
-      value: 'Gỗ sồi',
-    },
-    {
-      label: 'Gỗ thông',
-      value: 'Gỗ thông',
-    },
-  ];
+  // var materialsEnum = [
+  //   {
+  //     label: 'Gỗ sồi',
+  //     value: 'Gỗ sồi',
+  //   },
+  //   {
+  //     label: 'Gỗ thông',
+  //     value: 'Gỗ thông',
+  //   },
+  // ];
+
+  console.log(colorsEnum, materialsEnum, 'variants');
 
   const [colors, setColors] = useState(colorsEnum);
   const [materials, setMaterials] = useState(materialsEnum);
@@ -78,16 +84,42 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
     });
   }, []);
 
+  useEffect(() => {
+    getAllVariantsProduct().then((data) => {
+      let res = data.data;
+      setVariants(data.data);
+      console.log('res', res);
+
+      const colors = res
+        ?.filter((v) => v.variantProductType === 'color')
+        .map((x) => {
+          return { label: x.variantProductName, value: x.variantProductName };
+        });
+
+      const materials = res
+        ?.filter((v) => v.variantProductType === 'material')
+        .map((x) => {
+          return { label: x.variantProductName, value: x.variantProductName };
+        });
+
+      console.log('materials', materials);
+
+      setColors(colors);
+      setMaterials(materials);
+    });
+  }, []);
+
   const handleChange = () => {
     form.setFieldsValue({ sights: [] });
   };
 
   const handleVariantSelect = (value, type) => {
-    if (type === 'color') {
-      setColors((prevColors) => prevColors.filter((color) => color.value !== value));
-    } else if (type === 'material') {
-      setMaterials((prevMaterials) => prevMaterials.filter((material) => material.value !== value));
-    }
+    // if (type === 'color') {
+    //   setColors((prevColors) => prevColors.filter((color) => color.value !== value));
+    // } else if (type === 'material') {
+    //   setMaterials((prevMaterials) => prevMaterials.filter((material) => material.value !== value));
+    // }
+    // console.log(value, type);
   };
 
   const onUploadImage = async (data) => {
@@ -148,6 +180,7 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
       setLoading(false);
       setFieldsChanged(false);
       onSaveSuccess();
+      form.resetFields();
 
       notificationController.success({ message: t('common.success') });
     } catch (err) {

@@ -36,6 +36,7 @@ export const ProductsTable: React.FC = () => {
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState('');
+  const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   // create variant nested table from product
   const expandedRowRender = (parentRecord) => {
@@ -66,6 +67,7 @@ export const ProductsTable: React.FC = () => {
 
     return <Table columns={columns} dataSource={childData} pagination={false} />;
   };
+
   const fetch = useCallback(
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
@@ -102,24 +104,15 @@ export const ProductsTable: React.FC = () => {
     }
 
     notificationController.error({ message: 'Delete product failed' });
-
-    // setTableData({
-    //   ...tableData,
-    //   data: tableData.data.filter((item) => item._id !== rowId),
-    //   pagination: {
-    //     ...tableData.pagination,
-    //     total: tableData.pagination.total ? tableData.pagination.total - 1 : tableData.pagination.total,
-    //   },
-    // });
   };
 
-  // Hàm xử lí filter theo tên sản phẩm
   const handleFilterByName = (value, record) => {
     console.log(value, record);
-    // setTableData({
-    //   ...tableData,
-    //   data: tableData.data.filter((item) => item.name.includes(value)),
-    // });
+  };
+
+  const handleExpand = (expanded, record) => {
+    const keys = expanded ? [record.key] : [];
+    setExpandedRowKeys(keys);
   };
 
   const columns: ColumnsType<BasicTableRow> = [
@@ -194,7 +187,6 @@ export const ProductsTable: React.FC = () => {
       ],
       onFilter: (value: string, record: BasicTableRow) => record.categoryName.includes(value),
     },
-
     {
       title: 'Description',
       dataIndex: 'description',
@@ -204,23 +196,6 @@ export const ProductsTable: React.FC = () => {
       dataIndex: 'image',
       render: (text: string) => <img src={text} alt="product" style={{ width: '100px', height: '100px' }} />,
     },
-
-    // {
-    //   title: t('common.tags'),
-    //   key: 'tags',
-    //   dataIndex: 'tags',
-    //   render: (tags: Tag[]) => (
-    //     <BaseRow gutter={[10, 10]}>
-    //       {tags.map((tag: Tag) => {
-    //         return (
-    //           <BaseCol key={tag.value}>
-    //             <Status color={defineColorByPriority(tag.priority)} text={tag.value.toUpperCase()} />
-    //           </BaseCol>
-    //         );
-    //       })}
-    //     </BaseRow>
-    //   ),
-    // },
     {
       title: t('tables.actions'),
       dataIndex: 'actions',
@@ -286,11 +261,11 @@ export const ProductsTable: React.FC = () => {
       <BaseTable
         expandable={{
           expandedRowRender,
-          defaultExpandedRowKeys: ['1'],
-          onExpandedRowsChange: (key) => console.log(key),
+          expandedRowKeys,
+          onExpand: handleExpand,
         }}
         columns={columns}
-        dataSource={tableData.data}
+        dataSource={tableData.data.map((item) => ({ ...item, key: item._id }))}
         pagination={tableData.pagination}
         loading={tableData.loading}
         onChange={handleTableChange}
