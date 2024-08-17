@@ -17,7 +17,7 @@ export const ScreeningsHeader: React.FC<ScreeningsHeaderProps> = ({ currentStati
   return (
     <BaseRow gutter={[0, { xs: 15, sm: 15, md: 20 }]} align="middle">
       <BaseCol xs={24} xl={12}>
-        {t('medical-dashboard.latestScreenings.title')}
+        Số lượng sản phẩm bán ra theo tháng
       </BaseCol>
 
       <BaseCol xs={24} xl={12}>
@@ -43,11 +43,11 @@ export const ScreeningsHeader: React.FC<ScreeningsHeaderProps> = ({ currentStati
           <BaseCol xs={12}>
             <label>
               <StatisticsSelect
-                value={currentStatistics.statistic}
+                value={currentStatistics.category}
                 width="100%"
                 bordered={false}
                 shadow
-                placeholder={t('medical-dashboard.latestScreenings.statistics')}
+                placeholder={'Category'}
                 onChange={(statistic) =>
                   setCurrentStatistics((prev) => ({ ...prev, statistic } as CurrentStatisticsState))
                 }

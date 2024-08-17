@@ -105,8 +105,12 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
       }
       onFinish={onFinish}
     >
-      <BaseButtonsForm.Item label="Price" name="price" rules={[{ required: true, message: 'Price is required' }]}>
-        <InputNumber addonAfter="VND" />
+      <BaseButtonsForm.Item
+        label="Product name"
+        name="name"
+        rules={[{ required: true, message: 'Product name is required' }]}
+      >
+        <BaseInput />
       </BaseButtonsForm.Item>
 
       <BaseButtonsForm.Item
@@ -124,14 +128,14 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
         </BaseSelect>
       </BaseButtonsForm.Item>
 
-      <BaseButtonsForm.Item label="Stock">
+      {/* <BaseButtonsForm.Item label="Stock">
         <label>
           <BaseButtonsForm.Item name="stock" noStyle>
             <InputNumber min={1} max={10} />
           </BaseButtonsForm.Item>
         </label>
         <span> products </span>
-      </BaseButtonsForm.Item>
+      </BaseButtonsForm.Item> */}
 
       <BaseButtonsForm.Item
         name="description"
@@ -142,9 +146,9 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
       </BaseButtonsForm.Item>
 
       {/* Price */}
-      <BaseButtonsForm.Item label="Price" name="price" rules={[{ required: true, message: 'Price is required' }]}>
+      {/* <BaseButtonsForm.Item label="Price" name="price" rules={[{ required: true, message: 'Price is required' }]}>
         <InputNumber addonAfter="VND" />
-      </BaseButtonsForm.Item>
+      </BaseButtonsForm.Item> */}
 
       <BaseButtonsForm.Item
         name="image2"

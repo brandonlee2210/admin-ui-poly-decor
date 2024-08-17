@@ -35,7 +35,7 @@ export const BaseArticle: React.FC<BaseArticleProps> = ({
           <S.DateTime>{Dates.format(date, 'L')}</S.DateTime>
         </S.AuthorWrapper>
       </S.Header>
-      <BaseImage src={imgUrl} alt="article" preview={false} />
+
       <S.InfoWrapper>
         <S.InfoHeader>
           <S.Title>{title}</S.Title>

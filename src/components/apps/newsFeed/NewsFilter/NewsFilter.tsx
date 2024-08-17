@@ -85,30 +85,6 @@ const Filter: React.FC<Filter> = ({
         />
       </S.InputWrapper>
 
-      <S.InputWrapper>
-        <S.SearchIcon />
-        <S.Input
-          placeholder={t('newsFeed.titleSearch')}
-          value={title}
-          onChange={(event) => updateFilteredField('title', event.target.value)}
-        />
-      </S.InputWrapper>
-
-      <BaseDropdown placement="bottom" trigger={['click']} menu={{ items }}>
-        <S.AddTagWrapper>
-          <S.PlusIcon />
-          <S.AddTagText>{t('newsFeed.tag')}</S.AddTagText>
-        </S.AddTagWrapper>
-      </BaseDropdown>
-
-      {!!selectedTags.length && (
-        <S.TagsWrapper>
-          {selectedTags.map((tag) => (
-            <BaseHashTag key={tag.id} title={tag.title} bgColor={tag.bgColor} removeTag={() => onTagClick(tag)} />
-          ))}
-        </S.TagsWrapper>
-      )}
-
       <S.DateLabels>
         <S.DateLabel>{t('newsFeed.from')}</S.DateLabel>
         <S.DateLabel>{t('newsFeed.to')}</S.DateLabel>

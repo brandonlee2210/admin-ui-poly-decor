@@ -62,7 +62,7 @@ const defaultOption = {
     showDelay: 0,
     // eslint-disable-next-line
     formatter: (params: any) =>
-      params.value.length > 1 ? `${params.value[0]}cm ${params.value[1]}kg ` : `${params.name}: ${params.value} 'kg `,
+      params.value.length > 1 ? `${params.value[0]}1cm ${params.value[1]}kg ` : `${params.name}: ${params.value} 'kg `,
     axisPointer: {
       show: true,
       type: 'cross',
@@ -90,7 +90,7 @@ const defaultOption = {
     type: 'value',
     scale: true,
     axisLabel: {
-      formatter: '{value} cm',
+      formatter: '{value} ',
     },
     splitLine: {
       show: false,
@@ -111,7 +111,7 @@ export const ScatterChart: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <BaseCard padding="0 0 1.875rem" title={t('charts.scatter')}>
+    <BaseCard padding="0 0 1.875rem" title={'Doanh thu'}>
       <BaseChart option={defaultOption} />
     </BaseCard>
   );

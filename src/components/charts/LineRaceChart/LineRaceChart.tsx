@@ -133,7 +133,7 @@ export const LineRaceChart: React.FC = () => {
   };
 
   return (
-    <BaseCard padding="0 0 1.875rem" title={t('charts.lineRace')}>
+    <BaseCard padding="0 0 1.875rem" title={'Doanh thu danh mục theo tháng'}>
       <BaseChart option={option} height="24rem" />
     </BaseCard>
   );

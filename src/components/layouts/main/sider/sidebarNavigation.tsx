@@ -36,6 +36,12 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
   //   icon: <DashboardOutlined />,
   // },
   {
+    title: 'Statistics',
+    key: 'charts',
+    url: '/charts',
+    icon: <LineChartOutlined />,
+  },
+  {
     title: 'common.apps',
     key: 'apps',
     icon: <HomeOutlined />,
@@ -48,7 +54,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     ],
   },
   {
-    title: 'common.authPages',
+    title: 'Users',
     key: 'auth',
     icon: <UserOutlined />,
     children: [
@@ -112,11 +118,5 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     key: 'orders',
     url: '/orders',
     icon: <CodeSandboxOutlined />,
-  },
-  {
-    title: 'common.charts',
-    key: 'charts',
-    url: '/charts',
-    icon: <LineChartOutlined />,
   },
 ];

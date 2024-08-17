@@ -194,11 +194,6 @@ export const ProductsTable: React.FC = () => {
       ],
       onFilter: (value: string, record: BasicTableRow) => record.categoryName.includes(value),
     },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      showSorterTooltip: false,
-    },
 
     {
       title: 'Description',
