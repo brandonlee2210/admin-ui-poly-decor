@@ -12,7 +12,7 @@ import { useMounted } from '@app/hooks/useMounted';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
-import { getProductsPaginate, update, deleteProduct } from '@app/api/products.api';
+import { getUsersPaginate, update, deleteProduct } from '@app/api/products.api';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 // import * as S from '../components/tables/Tables.styles';
 import { BasePopconfirm } from '@app/components/common/BasePopconfirm/BasePopconfirm';
@@ -37,39 +37,10 @@ export const ProductsTable: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState('');
 
-  // create variant nested table from product
-  const expandedRowRender = (parentRecord) => {
-    const columns = [
-      { title: 'STT', dataIndex: 'indexNumber', key: 'indexNumber' },
-      { title: 'Variant color', dataIndex: 'variantColor', key: 'variantColor' },
-      { title: 'Variant material', dataIndex: 'variantMaterial', key: 'variantMaterial' },
-      { title: 'Variant price', dataIndex: 'variantPrice', key: 'variantPrice' },
-      { title: 'Variant stock', dataIndex: 'variantQuantity', key: 'variantQuantity' },
-    ];
-
-    // transform parenst record array colors and materials to child columns
-    const childData = [];
-
-    if (parentRecord.variants.length > 0) {
-      for (let i = 0; i < parentRecord.variants.length; ++i) {
-        childData.push({
-          key: `variant-${i}`,
-          indexNumber: i + 1,
-          variantName: parentRecord.variants[i].variantName,
-          variantColor: parentRecord.variants[i].color,
-          variantMaterial: parentRecord.variants[i].material,
-          variantPrice: `${parentRecord.variants[i].price} vnd`,
-          variantQuantity: parentRecord.variants[i].quantity,
-        });
-      }
-    }
-
-    return <Table columns={columns} dataSource={childData} pagination={false} />;
-  };
   const fetch = useCallback(
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
-      getProductsPaginate(pagination)
+      getUsersPaginate(pagination)
         .then((res) => {
           console.log('res', res);
           if (isMounted.current) {
@@ -102,30 +73,15 @@ export const ProductsTable: React.FC = () => {
     }
 
     notificationController.error({ message: 'Delete product failed' });
-
-    // setTableData({
-    //   ...tableData,
-    //   data: tableData.data.filter((item) => item._id !== rowId),
-    //   pagination: {
-    //     ...tableData.pagination,
-    //     total: tableData.pagination.total ? tableData.pagination.total - 1 : tableData.pagination.total,
-    //   },
-    // });
   };
 
   // Hàm xử lí filter theo tên sản phẩm
-  const handleFilterByName = (value, record) => {
-    console.log(value, record);
-    // setTableData({
-    //   ...tableData,
-    //   data: tableData.data.filter((item) => item.name.includes(value)),
-    // });
-  };
+  const handleFilterByName = (value, record) => {};
 
   const columns: ColumnsType<BasicTableRow> = [
     {
-      title: 'Product Name',
-      dataIndex: 'name',
+      title: 'Username',
+      dataIndex: 'username',
       render: (text: string) => <span>{text}</span>,
       filterMode: 'tree',
       filterSearch: true,
@@ -174,7 +130,7 @@ export const ProductsTable: React.FC = () => {
       onFilter: (value: string | number | boolean, record: BasicTableRow) => handleFilterByName(value, record),
     },
     {
-      title: 'Category Name',
+      title: 'Email',
       dataIndex: 'categoryName',
       sorter: (a: BasicTableRow, b: BasicTableRow) => a.categoryName.localeCompare(b.categoryName),
       showSorterTooltip: false,
@@ -195,37 +151,17 @@ export const ProductsTable: React.FC = () => {
       onFilter: (value: string, record: BasicTableRow) => record.categoryName.includes(value),
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
+      title: 'Role',
+      dataIndex: 'role',
       showSorterTooltip: false,
     },
 
-    {
-      title: 'Description',
-      dataIndex: 'description',
-    },
     {
       title: 'Image',
       dataIndex: 'image',
       render: (text: string) => <img src={text} alt="product" style={{ width: '100px', height: '100px' }} />,
     },
 
-    // {
-    //   title: t('common.tags'),
-    //   key: 'tags',
-    //   dataIndex: 'tags',
-    //   render: (tags: Tag[]) => (
-    //     <BaseRow gutter={[10, 10]}>
-    //       {tags.map((tag: Tag) => {
-    //         return (
-    //           <BaseCol key={tag.value}>
-    //             <Status color={defineColorByPriority(tag.priority)} text={tag.value.toUpperCase()} />
-    //           </BaseCol>
-    //         );
-    //       })}
-    //     </BaseRow>
-    //   ),
-    // },
     {
       title: t('tables.actions'),
       dataIndex: 'actions',
@@ -253,10 +189,9 @@ export const ProductsTable: React.FC = () => {
 
   return (
     <>
-      <SearchInput placeholder="Search product" style={{ width: 500, marginBottom: 10 }} loading={false} />
-      <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
+      {/* <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
         Add new product
-      </BaseButton>
+      </BaseButton> */}
       <BaseModal
         title={'Add new category'}
         open={isBasicModalOpen}
@@ -289,11 +224,6 @@ export const ProductsTable: React.FC = () => {
         />
       </BaseModal>
       <BaseTable
-        expandable={{
-          expandedRowRender,
-          defaultExpandedRowKeys: ['1'],
-          onExpandedRowsChange: (key) => console.log(key),
-        }}
         columns={columns}
         dataSource={tableData.data}
         pagination={tableData.pagination}

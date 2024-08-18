@@ -71,7 +71,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
       {
         title: 'Users List',
         key: 'usersList',
-        url: '/auth/users',
+        url: '/users',
       },
       // {
       //   title: 'common.lock',

@@ -29,7 +29,7 @@ const ProductsPage = () => {
     <>
       <PageTitle>{t('common.dataTables')}</PageTitle>
       <S.TablesWrapper>
-        <S.Card id="basic-table" title={'Products List'} padding="1.25rem 1.25rem 0">
+        <S.Card id="basic-table" title={'Users List'} padding="1.25rem 1.25rem 0">
           <ProductsTable />
         </S.Card>
       </S.TablesWrapper>
