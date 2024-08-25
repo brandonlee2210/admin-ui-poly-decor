@@ -10,6 +10,8 @@ import {
   UserOutlined,
   BlockOutlined,
   CodeSandboxOutlined,
+  BranchesOutlined,
+  CommentOutlined,
 } from '@ant-design/icons';
 import { ReactComponent as NftIcon } from '@app/assets/icons/nft-icon.svg';
 
@@ -99,7 +101,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     title: 'common.variants',
     key: 'variants',
     url: '/variants',
-    icon: <TableOutlined />,
+    icon: <BranchesOutlined />,
   },
   {
     title: 'common.products',
@@ -123,6 +125,6 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     title: 'Reviews',
     key: 'reviews',
     url: '/reviews',
-    icon: <TableOutlined />,
+    icon: <CommentOutlined />,
   },
 ];

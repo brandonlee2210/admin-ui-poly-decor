@@ -14,6 +14,7 @@ import { ValidationForm } from './AddForm.tsx';
 import { notificationController } from '@app/controllers/notificationController';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { BasicTableRow, Pagination } from 'api/table.api';
+import { PlusOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const initialPagination = {
   current: 1,
@@ -188,7 +189,7 @@ const CategoriesPage = () => {
   return (
     <>
       <PageTitle>{t('common.dataTables')}</PageTitle>
-      <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
+      <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)} icon={<PlusOutlined />}>
         Add new variant
       </BaseButton>
       <BaseModal

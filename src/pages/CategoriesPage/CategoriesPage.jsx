@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { PlusOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { EditableCell } from '../../components/tables/editableTable/EditableCell';
@@ -205,7 +206,7 @@ const CategoriesPage = () => {
   return (
     <>
       <PageTitle>{t('common.dataTables')}</PageTitle>
-      <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
+      <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)} icon={<PlusOutlined />}>
         Add new category
       </BaseButton>
       <BaseModal
