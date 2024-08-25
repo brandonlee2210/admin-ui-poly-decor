@@ -119,4 +119,10 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     url: '/orders',
     icon: <CodeSandboxOutlined />,
   },
+  {
+    title: 'Reviews',
+    key: 'reviews',
+    url: '/reviews',
+    icon: <TableOutlined />,
+  },
 ];

@@ -26,6 +26,20 @@ export const getUsersPaginate = async (pagination) => {
   // You may want to handle the error differently depending on your application's requirements
 };
 
+export const getReviewsPaginate = async (pagination) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/api/v1/reviews?page=${pagination.current}&limit=${pagination.pageSize}`,
+    );
+    console.log('response', response);
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  // You may want to handle the error differently depending on your application's requirements
+};
+
 export const getProductsPaginate = async (pagination) => {
   try {
     const response = await axios.get(

@@ -131,7 +131,7 @@ export const ProductsTable: React.FC = () => {
     },
     {
       title: 'Email',
-      dataIndex: 'categoryName',
+      dataIndex: 'email',
       sorter: (a: BasicTableRow, b: BasicTableRow) => a.categoryName.localeCompare(b.categoryName),
       showSorterTooltip: false,
       filters: [

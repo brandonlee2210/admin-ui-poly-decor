@@ -10,7 +10,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { getOrderById, update, updateStock } from '@app/api/orders.api';
 import { useState, useEffect } from 'react';
-import { Form } from 'antd'; // Import useForm from antd
+import { Form, Modal, Button } from 'antd'; // Import useForm from antd
 
 const formItemLayout = {
   labelCol: { span: 24 },
@@ -31,6 +31,10 @@ const statuses = [
     name: 'Đã giao hàng',
   },
   {
+    id: 5,
+    name: 'Đã nhận được hàng',
+  },
+  {
     id: 4,
     name: 'Đã hủy',
   },
@@ -47,12 +51,20 @@ export const EditForm: React.FC<{ orderId: string; onSaveSuccess: () => void }> 
   const [form] = Form.useForm(); // Create form instance
   const [isFieldsChanged, setFieldsChanged] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [values, setValues] = useState({});
 
   const [order, setOrder] = useState(null);
   const { t } = useTranslation();
 
   // can not select status before
   const [filterStatuses, setFilterStatuses] = useState(statuses);
+
+  useEffect(() => {
+    return () => {
+      form.resetFields();
+    };
+  });
 
   useEffect(() => {
     const filteredStatuses = statuses.filter((status) => status.id >= order?.status);
@@ -65,7 +77,12 @@ export const EditForm: React.FC<{ orderId: string; onSaveSuccess: () => void }> 
     });
   }, [orderId]);
 
-  const onFinish = async (values = {}) => {
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = async () => {
+    setIsModalOpen(false);
     setLoading(true);
     console.log(values);
 
@@ -85,14 +102,26 @@ export const EditForm: React.FC<{ orderId: string; onSaveSuccess: () => void }> 
         setLoading(false);
         return;
       }
+      form.resetFields();
       setLoading(false);
       setFieldsChanged(false);
+
       onSaveSuccess();
       notificationController.success({ message: t('common.success') });
     } catch (err) {
       notificationController.error({ message: t('common.error'), description: 'Update order failed' });
       setLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const onFinish = async (values = {}) => {
+    console.log(values);
+    setValues(values);
+    showModal();
   };
 
   if (!order) {
@@ -132,6 +161,22 @@ export const EditForm: React.FC<{ orderId: string; onSaveSuccess: () => void }> 
           ))}
         </BaseSelect>
       </BaseButtonsForm.Item>
+      <Modal
+        title="Xác nhận"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Không
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Có
+          </Button>,
+        ]}
+      >
+        <p>Bạn có chắc chắn muốn đổi trạng thái không?</p>
+      </Modal>
     </BaseButtonsForm>
   );
 };

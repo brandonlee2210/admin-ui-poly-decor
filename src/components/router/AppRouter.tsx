@@ -23,6 +23,7 @@ const CategoriesPage = React.lazy(() => import('@app/pages/CategoriesPage/Catego
 const OrdersPage = React.lazy(() => import('@app/pages/OrdersPage/OrdersPage'));
 const VariantsPage = React.lazy(() => import('@app/pages/VariantsPage/VariantsPage'));
 const UsersPage = React.lazy(() => import('@app/pages/UsersPage/UsersPage'));
+const ReviewsPage = React.lazy(() => import('@app/pages/ReviewsPage/ReviewsPage'));
 
 const NewsFeedPage = React.lazy(() => import('@app/pages/NewsFeedPage'));
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
@@ -122,6 +123,7 @@ const Orders = withLoading(OrdersPage);
 const Variants = withLoading(VariantsPage);
 
 const Users = withLoading(UsersPage);
+const Reviews = withLoading(ReviewsPage);
 
 export const AppRouter: React.FC = () => {
   const protectedLayout = (
@@ -147,6 +149,7 @@ export const AppRouter: React.FC = () => {
           <Route path="variants" element={<Variants />} />
           <Route path="charts" element={<Charts />} />
           <Route path="users" element={<Users />} />
+          <Route path="reviews" element={<Reviews />} />
           <Route path="server-error" element={<ServerError />} />
           <Route path="404" element={<Error404 />} />
           <Route path="profile" element={<ProfileLayout />}>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BasicTableRow, Pagination, Tag } from 'api/table.api';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
+import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { useTranslation } from 'react-i18next';
@@ -11,34 +12,20 @@ import { useMounted } from '@app/hooks/useMounted';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
-import { getProductsPaginate, getProductById, deleteProduct } from '@app/api/products.api';
-import { getOrdersPaginate, update, deleteOrder } from '@app/api/orders.api';
+import { getUsersPaginate, update, deleteProduct, getReviewsPaginate } from '@app/api/products.api';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 // import * as S from '../components/tables/Tables.styles';
 import { BasePopconfirm } from '@app/components/common/BasePopconfirm/BasePopconfirm';
+import { ValidationForm } from './AddForm.tsx';
 import { EditForm } from './EditForm.tsx';
-import { OrderDetailsTable } from './OrderDetail/OrderDetailTable';
-
-const orderStatus = {
-  1: 'Chờ xác nhận',
-  2: 'Đang giao hàng',
-  3: 'Đã giao hàng',
-  4: 'Đã huỷ',
-};
-
-const colorOrderStatus = {
-  1: '#FAAD14',
-  2: '#1890FF',
-  3: '#2F5496',
-  4: '#F5222D',
-};
+import { SearchInput } from '@app/components/common/inputs/SearchInput/SearchInput';
 
 const initialPagination: Pagination = {
   current: 1,
-  pageSize: 10,
+  pageSize: 4,
 };
 
-export const OrdersTable: React.FC = () => {
+export const ProductsTable: React.FC = () => {
   const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
     data: [],
     pagination: initialPagination,
@@ -46,14 +33,14 @@ export const OrdersTable: React.FC = () => {
   });
   const { t } = useTranslation();
   const { isMounted } = useMounted();
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingOrderId, setEditingOrderId] = useState('');
+  const [editingProductId, setEditingProductId] = useState('');
 
   const fetch = useCallback(
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
-      getOrdersPaginate(pagination)
+      getReviewsPaginate(pagination)
         .then((res) => {
           console.log('res', res);
           if (isMounted.current) {
@@ -76,89 +63,102 @@ export const OrdersTable: React.FC = () => {
     fetch(pagination);
   };
 
-  // Hàm xử lí filter theo tên sản phẩm
-  const handleFilterByName = (value, record) => {
-    console.log(value, record);
-    return record.status == value;
+  const handleDeleteRow = async (rowId: number) => {
+    let res = await deleteProduct(rowId);
 
-    // setTableData((tableData) => ({ ...tableData, loading: true }));
-    // getOrdersPaginate(initialPagination)
-    //   .then((res) => {
-    //     console.log('res', res);
-    //     if (isMounted.current) {
-    //       setTableData({ data: res.data, pagination: res.pagination, loading: false });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     notificationController.error({ message: 'Fetch product data failed' });
-    //     setTableData((tableData) => ({ ...tableData, loading: false }));
-    //   });
+    if (res._id) {
+      notificationController.success({ message: 'Delete product successfully' });
+      fetch(initialPagination);
+      return;
+    }
+
+    notificationController.error({ message: 'Delete product failed' });
   };
 
-  const columns: ColumnsType<BasicTableRow> = [
-    // {
-    //   title: 'STT,
-    //   dataIndex: 'orderID',
-    // },
-    // order date and conver to dd/mm/YYYY
-    {
-      title: 'Order Date',
-      dataIndex: 'orderDate',
-      render: (text: string) =>
-        new Date(text).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }),
-      showSorterTooltip: true,
-    },
-    {
-      title: 'Total',
-      dataIndex: 'total',
-      render: (text: number) => <span>{`${text.toLocaleString()} VND`}</span>,
+  // Hàm xử lí filter theo tên sản phẩm
+  const handleFilterByName = (value, record) => {};
 
-      showSorterTooltip: true,
-    },
+  const columns: ColumnsType<BasicTableRow> = [
     {
-      title: 'Address',
-      dataIndex: 'address',
-    },
-    {
-      title: 'Phone Number',
-      dataIndex: 'phoneNumber',
-    },
-    {
-      title: 'Full name',
-      dataIndex: 'fullname',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: (text: number) => <Status color={colorOrderStatus[text]} text={orderStatus[text]} />,
+      title: 'Review Content',
+      dataIndex: 'body',
+      render: (text: string) => <span>{text}</span>,
       filterMode: 'tree',
       filterSearch: true,
       filters: [
         {
-          text: 'Status',
-          value: 'status',
+          text: t('common.firstName'),
+          value: 'firstName',
           children: [
             {
-              text: 'Chờ xác nhận',
-              value: 1,
+              text: 'Joe',
+              value: 'Joe',
             },
             {
-              text: 'Đang giao hàng',
-              value: 2,
+              text: 'Pavel',
+              value: 'Pavel',
             },
             {
-              text: 'Đã giao hàng',
-              value: 3,
+              text: 'Jim',
+              value: 'Jim',
             },
             {
-              text: 'Đã huỷ',
-              value: 4,
+              text: 'Josh',
+              value: 'Josh',
+            },
+          ],
+        },
+        {
+          text: t('common.lastName'),
+          value: 'lastName',
+          children: [
+            {
+              text: 'Green',
+              value: 'Green',
+            },
+            {
+              text: 'Black',
+              value: 'Black',
+            },
+            {
+              text: 'Brown',
+              value: 'Brown',
             },
           ],
         },
       ],
       onFilter: (value: string | number | boolean, record: BasicTableRow) => handleFilterByName(value, record),
     },
+    {
+      title: 'Rating',
+      dataIndex: 'rating',
+      sorter: (a: BasicTableRow, b: BasicTableRow) => a.categoryName.localeCompare(b.categoryName),
+      showSorterTooltip: false,
+      render: (text: string) => <span>{text} Stars</span>,
+      filters: [
+        {
+          text: 'Electronics',
+          value: 'Electronics',
+        },
+        {
+          text: 'Clothing',
+          value: 'Clothing',
+        },
+        {
+          text: 'Books',
+          value: 'Books',
+        },
+      ],
+      onFilter: (value: string, record: BasicTableRow) => record.categoryName.includes(value),
+    },
+
+    {
+      title: 'Image',
+      dataIndex: 'image',
+      render: (text: string) =>
+        !text ? <div></div> : <img src={text} alt="product" style={{ width: '100px', height: '100px' }} />,
+    },
+
     {
       title: t('tables.actions'),
       dataIndex: 'actions',
@@ -169,21 +169,14 @@ export const OrdersTable: React.FC = () => {
             <BaseButton
               type="ghost"
               onClick={() => {
-                setEditingOrderId(record._id);
+                setEditingProductId(record._id);
                 setIsEditModalOpen(true);
               }}
             >
               Edit
             </BaseButton>
-            <BaseButton
-              type="default"
-              danger
-              onClick={() => {
-                setEditingOrderId(record._id);
-                setIsViewModalOpen(true);
-              }}
-            >
-              View Details
+            <BaseButton type="default" danger onClick={() => handleDeleteRow(record._id)}>
+              {t('tables.delete')}
             </BaseButton>
           </BaseSpace>
         );
@@ -193,8 +186,26 @@ export const OrdersTable: React.FC = () => {
 
   return (
     <>
+      {/* <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
+        Add new product
+      </BaseButton> */}
       <BaseModal
-        title={'Update order status'}
+        title={'Add new category'}
+        open={isBasicModalOpen}
+        onOk={() => setIsBasicModalOpen(false)}
+        onCancel={() => setIsBasicModalOpen(false)}
+        width={'70%'}
+        footer={null}
+      >
+        <ValidationForm
+          onSaveSuccess={() => {
+            setIsBasicModalOpen(false);
+            fetch(tableData.pagination);
+          }}
+        />
+      </BaseModal>
+      <BaseModal
+        title={'Edit product'}
         open={isEditModalOpen}
         onOk={() => setIsEditModalOpen(false)}
         onCancel={() => setIsEditModalOpen(false)}
@@ -202,22 +213,12 @@ export const OrdersTable: React.FC = () => {
         footer={null}
       >
         <EditForm
+          productId={editingProductId}
           onSaveSuccess={() => {
             setIsEditModalOpen(false);
             fetch(tableData.pagination);
           }}
-          orderId={editingOrderId}
         />
-      </BaseModal>
-      <BaseModal
-        title={'Edit product'}
-        open={isViewModalOpen}
-        onOk={() => setIsViewModalOpen(false)}
-        onCancel={() => setIsViewModalOpen(false)}
-        width={'100%'}
-        footer={null}
-      >
-        <OrderDetailsTable orderId={editingOrderId} />
       </BaseModal>
       <BaseTable
         columns={columns}

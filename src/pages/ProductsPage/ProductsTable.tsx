@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BasicTableRow, Pagination, Tag } from 'api/table.api';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +31,7 @@ export const ProductsTable: React.FC = () => {
     pagination: initialPagination,
     loading: false,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useTranslation();
   const { isMounted } = useMounted();
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
