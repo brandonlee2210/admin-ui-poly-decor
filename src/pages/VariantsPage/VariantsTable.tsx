@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BasicTableRow, Pagination, Tag } from 'api/table.api';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +35,15 @@ export const VariantsTable: React.FC = () => {
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteKey, setDeleteKey] = useState(null);
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
 
   // create variant nested table from product
   const expandedRowRender = (parentRecord) => {
@@ -231,7 +240,14 @@ export const VariantsTable: React.FC = () => {
             >
               Edit
             </BaseButton>
-            <BaseButton type="default" danger onClick={() => handleDeleteRow(record._id)}>
+            <BaseButton
+              type="default"
+              danger
+              onClick={() => {
+                setIsModalOpen(true);
+                setDeleteKey(record._id);
+              }}
+            >
               {t('tables.delete')}
             </BaseButton>
           </BaseSpace>
@@ -245,6 +261,22 @@ export const VariantsTable: React.FC = () => {
       <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)}>
         Add new product
       </BaseButton>
+      <Modal
+        title="Xác nhận"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Không
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Có
+          </Button>,
+        ]}
+      >
+        <p>Bạn có chắc chắn muốn đổi trạng thái không?</p>
+      </Modal>
       <BaseModal
         title={'Add new category'}
         open={isBasicModalOpen}

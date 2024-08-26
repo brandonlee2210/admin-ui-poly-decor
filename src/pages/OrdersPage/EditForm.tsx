@@ -26,10 +26,7 @@ const statuses = [
     id: 2,
     name: 'Đang giao hàng',
   },
-  {
-    id: 3,
-    name: 'Đã giao hàng',
-  },
+
   {
     id: 5,
     name: 'Đã nhận được hàng',
@@ -84,16 +81,17 @@ export const EditForm: React.FC<{ orderId: string; onSaveSuccess: () => void }> 
   const handleOk = async () => {
     setIsModalOpen(false);
     setLoading(true);
-    console.log(values);
+    // console.log(values);
 
     try {
       let res = await update(orderId, {
         ...order,
-        status: statuses.find((status) => status.name === values.status)?.id,
+        status: 1,
       });
 
+      console.log(statuses.find((status) => status.name === values.status)?.id);
       // Nếu là đang giao hàng thì cập nhật lại stock
-      if (values.status == 2) {
+      if (statuses.find((status) => status.name === values.status)?.id === 5) {
         await updateStock({ orderId, status: statuses.find((status) => status.name === values.status)?.id });
       }
 
@@ -119,9 +117,33 @@ export const EditForm: React.FC<{ orderId: string; onSaveSuccess: () => void }> 
   };
 
   const onFinish = async (values = {}) => {
-    console.log(values);
-    setValues(values);
-    showModal();
+    try {
+      let res = await update(orderId, {
+        ...order,
+        status: statuses.find((status) => status.name === values.status)?.id,
+      });
+
+      console.log(statuses.find((status) => status.name === values.status)?.id);
+      // Nếu là đang giao hàng thì cập nhật lại stock
+      if (statuses.find((status) => status.name === values.status)?.id === 5) {
+        await updateStock({ orderId, status: statuses.find((status) => status.name === values.status)?.id });
+      }
+
+      if (!res) {
+        notificationController.error({ message: t('common.error'), description: 'Update order failed' });
+        setLoading(false);
+        return;
+      }
+      form.resetFields();
+      setLoading(false);
+      setFieldsChanged(false);
+
+      onSaveSuccess();
+      notificationController.success({ message: t('common.success') });
+    } catch (err) {
+      notificationController.error({ message: t('common.error'), description: 'Update order failed' });
+      setLoading(false);
+    }
   };
 
   if (!order) {

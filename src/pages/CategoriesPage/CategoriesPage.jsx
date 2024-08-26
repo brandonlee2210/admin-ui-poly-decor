@@ -10,6 +10,7 @@ import { useMounted } from '@app/hooks/useMounted';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
+import { Modal, Button } from 'antd';
 // import * as S from '../components/tables/Tables.styles';
 import { BasePopconfirm } from '@app/components/common/BasePopconfirm/BasePopconfirm';
 import { ValidationForm } from './AddForm.tsx';
@@ -28,6 +29,17 @@ const CategoriesPage = () => {
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
   const [form] = BaseForm.useForm();
   const [editingKey, setEditingKey] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteKey, setDeleteKey] = useState(0);
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOk = async () => {
+    await handleDeleteRow();
+    setIsModalOpen(false);
+  };
 
   const [tableData, setTableData] = useState({
     data: [],
@@ -121,9 +133,9 @@ const CategoriesPage = () => {
     }
   };
 
-  const handleDeleteRow = async (rowId) => {
+  const handleDeleteRow = async () => {
     try {
-      let res = await deleteCategory(rowId);
+      let res = await deleteCategory(deleteKey);
       console.log(res);
       if (res) {
         fetch(tableData.pagination);
@@ -174,7 +186,14 @@ const CategoriesPage = () => {
                 <BaseButton type="ghost" disabled={editingKey !== 0} onClick={() => edit(record)}>
                   {t('common.edit')}
                 </BaseButton>
-                <BaseButton type="default" danger onClick={() => handleDeleteRow(record._id)}>
+                <BaseButton
+                  type="default"
+                  danger
+                  onClick={() => {
+                    setDeleteKey(record._id);
+                    setIsModalOpen(true);
+                  }}
+                >
                   {t('tables.delete')}
                 </BaseButton>
               </>
@@ -205,6 +224,22 @@ const CategoriesPage = () => {
 
   return (
     <>
+      <Modal
+        title="Xác nhận"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Không
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Có
+          </Button>,
+        ]}
+      >
+        <p>Bạn có chắc chắn muốn xoá danh mục này không?</p>
+      </Modal>
       <PageTitle>{t('common.dataTables')}</PageTitle>
       <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)} icon={<PlusOutlined />}>
         Add new category

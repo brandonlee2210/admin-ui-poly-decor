@@ -150,7 +150,7 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
         <InputNumber addonAfter="VND" />
       </BaseButtonsForm.Item> */}
 
-      <BaseButtonsForm.Item
+      {/* <BaseButtonsForm.Item
         name="image2"
         label={t('forms.validationFormLabels.upload')}
         valuePropName="fileList"
@@ -165,7 +165,7 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
 
       <BaseButtonsForm.Item label="Image" name="image" rules={[{ required: true, message: 'Image is required' }]}>
         <BaseInput />
-      </BaseButtonsForm.Item>
+      </BaseButtonsForm.Item> */}
     </BaseButtonsForm>
   );
 };

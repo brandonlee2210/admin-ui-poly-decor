@@ -14,7 +14,13 @@ import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseCheckbox } from '@app/components/common/BaseCheckbox/BaseCheckbox';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
-import { getCategories, update, deleteCategory, getAllVariantsProduct } from '@app/api/categories.api';
+import {
+  getCategories,
+  update,
+  deleteCategory,
+  getAllVariantsProduct,
+  getVariantsProductt,
+} from '@app/api/categories.api';
 import { addNewProduct } from '@app/api/products.api';
 import { PlusOutlined } from '@ant-design/icons';
 import * as S from './DynamicForm.styles';
@@ -85,7 +91,12 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
   }, []);
 
   useEffect(() => {
-    getAllVariantsProduct().then((data) => {
+    getVariantsProductt({
+      current: 1,
+      pageSize: 100,
+      sortBy: 'id',
+      sortOrder: 'asc',
+    }).then((data) => {
       let res = data.data;
       setVariants(data.data);
       console.log('res', res);
@@ -164,6 +175,30 @@ export const ValidationForm: React.FC = ({ onSaveSuccess }) => {
       ...values,
       image: imageLink,
     };
+
+    // if there's not variants then return
+    if (!values.variants || !values.variants.length) {
+      notificationController.error({ message: t('common.error'), description: 'Please select at least one variant' });
+      return;
+    }
+
+    let variants = dataAdd.variants;
+
+    // if there are variants that the same add up
+
+    // variants = variants.reduce((acc, variant) => {
+    //   const item = acc.find((item) => item.variantName === variant.variantName);
+    //   if (item) {
+    //     item.variantValue = [...item.variantValue, variant.variantValue];
+    //   } else {
+    //     acc.push(variant);
+    //   }
+    //   return acc;
+    // }, []);
+
+    console.log(dataAdd);
+
+    // return;
 
     // upload image to folder asset client
 

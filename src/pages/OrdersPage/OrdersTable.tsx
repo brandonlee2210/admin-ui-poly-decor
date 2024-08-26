@@ -22,7 +22,6 @@ import { OrderDetailsTable } from './OrderDetail/OrderDetailTable';
 const orderStatus = {
   1: 'Chờ xác nhận',
   2: 'Đang giao hàng',
-  3: 'Đã giao hàng',
   4: 'Đã huỷ',
   5: 'Đã nhận hàng',
 };
@@ -30,7 +29,6 @@ const orderStatus = {
 const colorOrderStatus = {
   1: '#FAAD14',
   2: '#1890FF',
-  3: '#2F5496',
   4: '#F5222D',
   5: '#87D068',
 };

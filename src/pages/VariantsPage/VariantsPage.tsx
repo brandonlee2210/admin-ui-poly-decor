@@ -3,7 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { EditableCell } from '../../components/tables/editableTable/EditableCell';
 import { EditableTable } from '../../components/tables/editableTable/EditableTable';
-import { getCategories, update, deleteCategory, getVariantsProductt } from '@app/api/categories.api';
+import {
+  getCategories,
+  updateVariantsProduct,
+  deleteVariantsProduct,
+  getVariantsProductt,
+} from '@app/api/categories.api';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { useMounted } from '@app/hooks/useMounted';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -14,6 +19,7 @@ import { ValidationForm } from './AddForm.tsx';
 import { notificationController } from '@app/controllers/notificationController';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { BasicTableRow, Pagination } from 'api/table.api';
+import { Modal, Button } from 'antd';
 import { PlusOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const initialPagination = {
@@ -27,6 +33,16 @@ const CategoriesPage = () => {
   const [isBasicModalOpen, setIsBasicModalOpen] = useState(false);
   const [form] = BaseForm.useForm();
   const [editingKey, setEditingKey] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteKey, setDeleteKey] = useState(null);
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOk = async () => {
+    await handleDeleteRow();
+    setIsModalOpen(false);
+  };
 
   const [tableData, setTableData] = useState({
     data: [],
@@ -89,12 +105,12 @@ const CategoriesPage = () => {
           ...row,
         };
 
-        let res = await update(dataUpdate._id, dataUpdate);
+        let res = await updateVariantsProduct(dataUpdate._id, dataUpdate);
 
         if (res._id) {
-          notificationController.success({ message: t('common.success'), description: 'Update category successfully' });
+          notificationController.success({ message: t('common.success'), description: 'Update variant successfully' });
         } else {
-          notificationController.error({ message: t('common.error'), description: 'Update category failed' });
+          notificationController.error({ message: t('common.error'), description: 'Update variant failed' });
         }
       } else {
         newData.push(row);
@@ -104,22 +120,22 @@ const CategoriesPage = () => {
       setEditingKey(0);
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
-      notificationController.error({ message: t('common.error'), description: 'Update category failed' });
+      notificationController.error({ message: t('common.error'), description: 'Update variant failed' });
     }
   };
 
-  const handleDeleteRow = async (rowId) => {
+  const handleDeleteRow = async () => {
     try {
-      let res = await deleteCategory(rowId);
+      let res = await deleteVariantsProduct(deleteKey);
       if (res) {
         fetch(tableData.pagination);
-        notificationController.success({ message: t('common.success'), description: 'Delete category successfully' });
+        notificationController.success({ message: t('common.success'), description: 'Delete variant successfully' });
       } else {
-        notificationController.error({ message: t('common.error'), description: ' Delete category failed' });
+        notificationController.error({ message: t('common.error'), description: ' Delete variant failed' });
         console.log('Error deleting row:', res);
       }
     } catch (errInfo) {
-      notificationController.error({ message: t('common.error'), description: 'Delete category failed' });
+      notificationController.error({ message: t('common.error'), description: 'Delete variant failed' });
       console.log('Error:', errInfo);
     }
   };
@@ -159,7 +175,14 @@ const CategoriesPage = () => {
                 <BaseButton type="ghost" disabled={editingKey !== 0} onClick={() => edit(record)}>
                   {t('common.edit')}
                 </BaseButton>
-                <BaseButton type="default" danger onClick={() => handleDeleteRow(record._id)}>
+                <BaseButton
+                  type="default"
+                  danger
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setDeleteKey(record._id);
+                  }}
+                >
                   {t('tables.delete')}
                 </BaseButton>
               </>
@@ -188,6 +211,22 @@ const CategoriesPage = () => {
 
   return (
     <>
+      <Modal
+        title="Xác nhận"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Không
+          </Button>,
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Có
+          </Button>,
+        ]}
+      >
+        <p>Bạn có chắc chắn muốn xoá biến thể này không?</p>
+      </Modal>
       <PageTitle>{t('common.dataTables')}</PageTitle>
       <BaseButton type="primary" className="mb-3" onClick={() => setIsBasicModalOpen(true)} icon={<PlusOutlined />}>
         Add new variant

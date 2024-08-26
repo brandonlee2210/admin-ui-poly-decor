@@ -84,6 +84,21 @@ export const addNewVariant = async (data) => {
   // You may want to handle the error differently depending on your application's requirements
 };
 
+export const deleteVariantsProduct = async (id) => {
+  try {
+    const response = await axios.delete(`http://localhost:8000/api/v1/variantProducts/${id}`);
+
+    console.log('response', response);
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+  // You may want to handle the error differently depending on your application's requirements
+  // For example, you might want to display an error message to the user
+};
+
 export const deleteCategory = async (id) => {
   try {
     const response = await axios.delete(`http://localhost:8000/api/v1/categories/${id}`);
