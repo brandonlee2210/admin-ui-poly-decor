@@ -110,6 +110,49 @@ export const update = async (id, data) => {
   // For example, you might want to display an error message to the user
 };
 
+export const getProductsByMonth = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/v1/statistic/products-by-month`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    return [];
+  }
+};
+export const getStatistics = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/v1/statistic/list-data`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    return [];
+  }
+};
+
+export const getProductsByEveryMonth = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/v1//statistic/revenue-each`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    return [];
+  }
+};
+
+export const getListData = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/v1/statistic/list-data`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+
+    return [];
+  }
+};
+
 export const updateStock = async (data) => {
   try {
     const response = await axios.post(`http://localhost:8000/api/v1/orders/update-stock`, data);

@@ -12,7 +12,7 @@ import { useMounted } from '@app/hooks/useMounted';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
-import { getProductsPaginate, update, deleteProduct } from '@app/api/products.api';
+import { getProductsPaginate, addListProducts, update, deleteProduct } from '@app/api/products.api';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
 // import * as S from '../components/tables/Tables.styles';
 import { BasePopconfirm } from '@app/components/common/BasePopconfirm/BasePopconfirm';
@@ -59,6 +59,7 @@ export const ProductsTable: React.FC = () => {
     data.forEach((row) => {
       row.variants.forEach((variant) => {
         variants.push({
+          productID: row._id,
           name: row.name,
           color: variant.color,
           material: variant.material,
@@ -157,12 +158,12 @@ export const ProductsTable: React.FC = () => {
     XLSX.writeFile(workbook, 'Products.xlsx');
   };
 
-  const importFromExcel = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const importFromExcel = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const data = new Uint8Array(e.target?.result as ArrayBuffer);
       const workbook = XLSX.read(data, { type: 'array' });
 
@@ -215,9 +216,11 @@ export const ProductsTable: React.FC = () => {
         return rowData;
       });
 
-      // Add variants to the corresponding products
-      rows.forEach((product) => {
-        product.variants = variants.filter((variant) => variant.productId === product.id);
+      // Add variants to the corresponding products with the same _id attribute
+      rows.forEach((row) => {
+        const variantsProducts = variants.filter((variant) => variant.productID === row._id);
+
+        row.variants = variantsProducts;
       });
 
       console.log(rows);
@@ -226,8 +229,22 @@ export const ProductsTable: React.FC = () => {
         ...prevState,
         data: [...prevState.data, ...rows],
       }));
+
+      // remove _id
+      let dataAdd = rows.map((row) => {
+        delete row._id;
+        return row;
+      });
+
+      let res = await addListProducts(dataAdd);
+
+      if (res) {
+        notificationController.success({ message: 'Add products successfully' });
+      }
     };
     reader.readAsArrayBuffer(file);
+
+    // add rows to products table in db
   };
 
   // create variant nested table from product
@@ -458,6 +475,7 @@ export const ProductsTable: React.FC = () => {
         footer={null}
       >
         <EditForm
+          open={isEditModalOpen}
           productId={editingProductId}
           onSaveSuccess={() => {
             setIsEditModalOpen(false);

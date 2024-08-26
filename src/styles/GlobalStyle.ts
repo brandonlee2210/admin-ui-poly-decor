@@ -38,6 +38,10 @@ export default createGlobalStyle`
       }
     }
   }
+  
+  main#main-content {
+    padding-left: 40px;
+}
 
   .search-overlay {
     box-shadow: var(--box-shadow);

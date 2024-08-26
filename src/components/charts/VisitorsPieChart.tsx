@@ -28,7 +28,7 @@ export const VisitorsPieChart: React.FC = () => {
 
   useEffect(() => {
     fetch();
-  }, [fetch]);
+  }, []);
 
   const name = t('charts.visitorsFrom');
 

@@ -11,6 +11,7 @@
     "url": "https://github.com/altence/lightence-admin/issues"
   },
   "dependencies": {
+    "@ant-design/charts": "^2.2.1",
     "@ant-design/icons": "^4.6.2",
     "@craco/craco": "^6.1.2",
     "@lit-labs/react": "^1.0.2",

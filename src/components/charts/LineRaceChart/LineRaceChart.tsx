@@ -49,7 +49,7 @@ export const LineRaceChart: React.FC = () => {
   const theme = useAppSelector((state) => state.theme.theme);
 
   const runAnimation = useCallback(() => {
-    const countries = ['Finland', 'Germany', 'Iceland', 'Norway', 'United Kingdom'];
+    const countries = ['Australia', 'Canada'];
     const datasetWithFilters: DataRow[] = [];
     const seriesList: SeriesRow[] = [];
 

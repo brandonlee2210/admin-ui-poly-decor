@@ -83,72 +83,13 @@ export const ProductsTable: React.FC = () => {
       title: 'Username',
       dataIndex: 'username',
       render: (text: string) => <span>{text}</span>,
-      filterMode: 'tree',
-      filterSearch: true,
-      filters: [
-        {
-          text: t('common.firstName'),
-          value: 'firstName',
-          children: [
-            {
-              text: 'Joe',
-              value: 'Joe',
-            },
-            {
-              text: 'Pavel',
-              value: 'Pavel',
-            },
-            {
-              text: 'Jim',
-              value: 'Jim',
-            },
-            {
-              text: 'Josh',
-              value: 'Josh',
-            },
-          ],
-        },
-        {
-          text: t('common.lastName'),
-          value: 'lastName',
-          children: [
-            {
-              text: 'Green',
-              value: 'Green',
-            },
-            {
-              text: 'Black',
-              value: 'Black',
-            },
-            {
-              text: 'Brown',
-              value: 'Brown',
-            },
-          ],
-        },
-      ],
+
       onFilter: (value: string | number | boolean, record: BasicTableRow) => handleFilterByName(value, record),
     },
     {
       title: 'Email',
       dataIndex: 'email',
       sorter: (a: BasicTableRow, b: BasicTableRow) => a.categoryName.localeCompare(b.categoryName),
-      showSorterTooltip: false,
-      filters: [
-        {
-          text: 'Electronics',
-          value: 'Electronics',
-        },
-        {
-          text: 'Clothing',
-          value: 'Clothing',
-        },
-        {
-          text: 'Books',
-          value: 'Books',
-        },
-      ],
-      onFilter: (value: string, record: BasicTableRow) => record.categoryName.includes(value),
     },
     {
       title: 'Role',

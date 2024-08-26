@@ -10,6 +10,9 @@ import { TreatmentCard } from '@app/components/medical-dashboard/treatmentCard/T
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
+import MostSellingProductsChart from '../components/charts/MostSellingProducts';
+import Statistics from '../components/charts/Statistics';
+import RevenueTable from '../components/charts/RevenueTable';
 
 const ChartsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -17,26 +20,15 @@ const ChartsPage: React.FC = () => {
   return (
     <>
       <PageTitle>{t('common.charts')}</PageTitle>
-      <BaseRow gutter={[30, 30]}>
-        <BaseCol id="line-race" xs={24}>
-          <LineRaceChart />
-        </BaseCol>
-        {/* <BaseCol id="gradient-stacked-area" xs={24}>
-          <GradientStackedAreaChart />
-        </BaseCol>
-        <BaseCol id="bar-animation-delay" xs={24}>
-          <BarAnimationDelayChart />
-        </BaseCol> */}
-        <BaseCol id="latest-screenings" span={24}>
-          <ScreeningsCard />
-        </BaseCol>
+      <h2>Sản phẩm bán nhiều nhất theo từng tháng</h2>
+      <MostSellingProductsChart />
+      <Statistics />
+      <RevenueTable />
+      {/* <BaseRow gutter={[30, 30]}>
         <BaseCol id="pie" xs={24} lg={12}>
           <VisitorsPieChart />
         </BaseCol>
-        <BaseCol id="scatter" xs={24} lg={12}>
-          <ScatterChart />
-        </BaseCol>
-      </BaseRow>
+      </BaseRow> */}
     </>
   );
 };

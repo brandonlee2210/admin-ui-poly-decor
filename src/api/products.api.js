@@ -40,6 +40,18 @@ export const getReviewsPaginate = async (pagination) => {
   // You may want to handle the error differently depending on your application's requirements
 };
 
+export const addListProducts = async (products) => {
+  try {
+    const response = await axios.post('http://localhost:8000/api/v1/addVariants/addListVariants', {
+      products,
+    });
+    console.log('response', response);
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const getProductsPaginate = async (pagination) => {
   try {
     const response = await axios.get(

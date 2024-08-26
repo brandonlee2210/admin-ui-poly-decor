@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import { InputNumber } from '@app/components/common/inputs/InputNumber/InputNumber';
 import { BaseSelect, Option } from '@app/components/common/selects/BaseSelect/BaseSelect';
@@ -8,9 +8,13 @@ import { BaseRate } from '@app/components/common/BaseRate/BaseRate';
 import { BaseUpload } from '@app/components/common/BaseUpload/BaseUpload';
 import { notificationController } from '@app/controllers/notificationController';
 import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
-import { getCategories, getProductById, update } from '@app/api/products.api';
+import { getProductById, update } from '@app/api/products.api';
+import * as S from './DynamicForm.styles';
 import { useState, useEffect } from 'react';
-import { Form } from 'antd'; // Import useForm from antd
+import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
+import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
+import { getCategories, getVariantsProductt } from '@app/api/categories.api';
+import { Form } from 'antd';
 
 const formItemLayout = {
   labelCol: { span: 24 },
@@ -24,12 +28,23 @@ const normFile = (e = { fileList: [] }) => {
   return e && e.fileList;
 };
 
-export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }> = ({ productId, onSaveSuccess }) => {
-  const [form] = Form.useForm(); // Create form instance
+export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }> = ({
+  productId,
+  onSaveSuccess,
+  isEditModalOpen,
+}) => {
+  const [form] = Form.useForm();
   const [isFieldsChanged, setFieldsChanged] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [product, setProduct] = useState(null);
+  const [colorsEnum, setColorsEnum] = useState([]);
+  const [materialsEnum, setMaterialsEnum] = useState([]);
+  const [variants, setVariants] = useState([]);
+
+  const [colors, setColors] = useState(colorsEnum);
+  const [materials, setMaterials] = useState(materialsEnum);
+
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -39,23 +54,57 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
 
     getProductById(productId).then((data) => {
       setProduct(data);
+      form.setFieldsValue({
+        name: data.name,
+        categoryName: data.categoryName,
+        stock: data.stock,
+        description: data.description,
+        price: data.price || 0,
+        image: data.image,
+        variants: data.variants || [],
+      });
     });
   }, [productId]);
 
+  useEffect(() => {
+    return () => {
+      form.resetFields();
+    };
+  }, [form]);
+
+  useEffect(() => {
+    getVariantsProductt({
+      current: 1,
+      pageSize: 100,
+      sortBy: 'id',
+      sortOrder: 'asc',
+    }).then((data) => {
+      let res = data.data;
+      setVariants(data.data);
+
+      const colors = res
+        ?.filter((v) => v.variantProductType === 'color')
+        .map((x) => {
+          return { label: x.variantProductName, value: x.variantProductName };
+        });
+
+      const materials = res
+        ?.filter((v) => v.variantProductType === 'material')
+        .map((x) => {
+          return { label: x.variantProductName, value: x.variantProductName };
+        });
+
+      setColors(colors);
+      setMaterials(materials);
+    });
+  }, []);
+
+  const handleVariantSelect = (value, type) => {
+    // Handle variant selection if needed
+  };
+
   const onFinish = async (values = {}) => {
     setLoading(true);
-
-    // let image = '';
-    // if (values.image) {
-    //   image = values.image[0]?.name;
-    // } else {
-    //   image = product.image || 'default.jpg';
-    // }
-
-    // let dataUpdate = {
-    //   ...values,
-    //   image,
-    // };
 
     try {
       let res = await update(productId, values);
@@ -66,7 +115,6 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
         return;
       }
 
-      console.log(res);
       setLoading(false);
       setFieldsChanged(false);
       onSaveSuccess();
@@ -84,7 +132,7 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
   return (
     <BaseButtonsForm
       {...formItemLayout}
-      form={form} // Pass form instance to BaseButtonsForm
+      form={form}
       isFieldsChanged={isFieldsChanged}
       onFieldsChange={() => setFieldsChanged(true)}
       name="editForm"
@@ -95,6 +143,7 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
         description: product.description,
         price: product.price || 0,
         image: product.image,
+        variants: product.variants || [],
       }}
       footer={
         <BaseButtonsForm.Item>
@@ -128,15 +177,6 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
         </BaseSelect>
       </BaseButtonsForm.Item>
 
-      {/* <BaseButtonsForm.Item label="Stock">
-        <label>
-          <BaseButtonsForm.Item name="stock" noStyle>
-            <InputNumber min={1} max={10} />
-          </BaseButtonsForm.Item>
-        </label>
-        <span> products </span>
-      </BaseButtonsForm.Item> */}
-
       <BaseButtonsForm.Item
         name="description"
         label={'Description'}
@@ -145,27 +185,106 @@ export const EditForm: React.FC<{ productId: string; onSaveSuccess: () => void }
         <BaseInput />
       </BaseButtonsForm.Item>
 
-      {/* Price */}
-      {/* <BaseButtonsForm.Item label="Price" name="price" rules={[{ required: true, message: 'Price is required' }]}>
-        <InputNumber addonAfter="VND" />
-      </BaseButtonsForm.Item> */}
+      <BaseButtonsForm.Item label={'Variants'}>
+        <BaseButtonsForm.List name="variants">
+          {(fields, { add, remove }) => (
+            <>
+              {console.log(JSON.stringify(form.getFieldValue()))}
+              {fields.map((field) => (
+                <BaseRow key={field.key} wrap={false} gutter={[10, 10]} align="middle" justify="space-between">
+                  <BaseCol span={6}>
+                    <BaseButtonsForm.Item
+                      noStyle
+                      shouldUpdate={(prevValues: any, curValues: any) =>
+                        prevValues.area !== curValues.area || prevValues.sights !== curValues.sights
+                      }
+                    >
+                      {() => (
+                        <BaseButtonsForm.Item
+                          {...field}
+                          label={'Select color'}
+                          name={[field.name, 'color']}
+                          fieldKey={[field.key, 'color']}
+                          rules={[{ required: true, message: t('forms.dynamicFormLabels.sightError') }]}
+                        >
+                          <BaseSelect onChange={(value) => handleVariantSelect(value, 'color')}>
+                            {colors.map((item) => (
+                              <Option key={item.value} value={item.value}>
+                                {item.label}
+                              </Option>
+                            ))}
+                          </BaseSelect>
+                        </BaseButtonsForm.Item>
+                      )}
+                    </BaseButtonsForm.Item>
+                  </BaseCol>
+                  <BaseCol span={6}>
+                    <BaseButtonsForm.Item
+                      noStyle
+                      shouldUpdate={(prevValues: any, curValues: any) =>
+                        prevValues.area !== curValues.area || prevValues.sights !== curValues.sights
+                      }
+                    >
+                      {() => (
+                        <BaseButtonsForm.Item
+                          {...field}
+                          label={'Select material'}
+                          name={[field.name, 'material']}
+                          fieldKey={[field.key, 'material']}
+                          rules={[{ required: true, message: t('forms.dynamicFormLabels.sightError') }]}
+                        >
+                          <BaseSelect onChange={(value) => handleVariantSelect(value, 'material')}>
+                            {materials.map((item) => (
+                              <Option key={item.value} value={item.value}>
+                                {item.label}
+                              </Option>
+                            ))}
+                          </BaseSelect>
+                        </BaseButtonsForm.Item>
+                      )}
+                    </BaseButtonsForm.Item>
+                  </BaseCol>
+                  <BaseCol span={6}>
+                    <BaseButtonsForm.Item
+                      {...field}
+                      label={'Price'}
+                      name={[field.name, 'price']}
+                      fieldKey={[field.key, 'price']}
+                      rules={[{ required: true, message: 'Price must not be empty' }]}
+                    >
+                      <S.Wrapper>
+                        <BaseInput addonAfter="VND" />
+                      </S.Wrapper>
+                    </BaseButtonsForm.Item>
+                  </BaseCol>
+                  <BaseCol span={6}>
+                    <BaseButtonsForm.Item
+                      {...field}
+                      label={'Quantity'}
+                      name={[field.name, 'quantity']}
+                      fieldKey={[field.key, 'quantity']}
+                      rules={[{ required: true, message: 'Quantity is required' }]}
+                    >
+                      <S.Wrapper>
+                        <BaseInput />
+                        <S.RemoveBtn onClick={() => remove(field.name)} />
+                      </S.Wrapper>
+                    </BaseButtonsForm.Item>
+                  </BaseCol>
+                </BaseRow>
+              ))}
 
-      {/* <BaseButtonsForm.Item
-        name="image2"
-        label={t('forms.validationFormLabels.upload')}
-        valuePropName="fileList"
-        getValueFromEvent={normFile}
-      >
-        <BaseUpload name="logo" action="/upload.do" listType="picture">
-          <BaseButton type="default" icon={<UploadOutlined />}>
-            {t('forms.validationFormLabels.clickToUpload')}
-          </BaseButton>
-        </BaseUpload>
+              {(colors.length > 0 || materials.length > 0) && (
+                <BaseButtonsForm.Item>
+                  <BaseButton type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Add variant
+                  </BaseButton>
+                </BaseButtonsForm.Item>
+              )}
+            </>
+          )}
+        </BaseButtonsForm.List>
       </BaseButtonsForm.Item>
-
-      <BaseButtonsForm.Item label="Image" name="image" rules={[{ required: true, message: 'Image is required' }]}>
-        <BaseInput />
-      </BaseButtonsForm.Item> */}
     </BaseButtonsForm>
   );
 };
